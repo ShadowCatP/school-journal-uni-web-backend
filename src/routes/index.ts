@@ -1,8 +1,11 @@
 import { Router } from "express";
 
 import { getDbPool } from "../db/pool";
+import usersRoutes from "./users";
 
 const router = Router();
+
+router.use("/users", usersRoutes);
 
 router.get("/", async (req, res) => {
   res.send("Hello World");
