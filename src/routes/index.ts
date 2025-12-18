@@ -15,13 +15,13 @@ router.get("/db", async (req, res) => {
   try {
     const pool = getDbPool();
     if (!pool) {
-      return res.status(503).json({ ok: false });
+      return res.status(503).json({ error: "Database unavailable" });
     }
 
     const [rows] = await pool.query("SELECT 1 AS db_alive");
-    return res.json({ ok: true, rows });
+    return res.json(rows);
   } catch (err) {
-    return res.status(503).json({ ok: false, msg: err });
+    return res.status(503).json({ error: err });
   }
 });
 

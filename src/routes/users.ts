@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
     "SELECT user_id, first_name, middle_name, last_name, email, pesel, created_at, updated_at FROM User ORDER BY user_id DESC"
   );
 
-  return res.json({ ok: true, users: rows });
+  return res.json(rows);
 });
 
 router.get("/:id", async (req, res) => {
@@ -28,7 +28,7 @@ router.get("/:id", async (req, res) => {
 
   const userId = Number(req.params.id);
   if (!Number.isInteger(userId) || userId <= 0) {
-    return res.status(400).json({ ok: false, error: "Invalid user id" });
+    return res.status(400).json({ error: "Invalid user id" });
   }
 
   const [rows] = await pool.execute<UserRow[]>(
@@ -37,10 +37,10 @@ router.get("/:id", async (req, res) => {
   );
 
   if (rows.length === 0) {
-    return res.status(404).json({ ok: false, error: "User not found" });
+    return res.status(404).json({ error: "User not found" });
   }
 
-  return res.json({ ok: true, user: rows[0] });
+  return res.json(rows[0]);
 });
 
 router.post("/", async (req, res) => {
@@ -60,16 +60,13 @@ router.post("/", async (req, res) => {
 
   if (!first_name || !last_name || !email || !password_hash || !pesel) {
     return res.status(400).json({
-      ok: false,
       error: "Missing required fields",
       required: ["first_name", "last_name", "email", "password_hash", "pesel"],
     });
   }
 
   if (pesel.length !== 11) {
-    return res
-      .status(400)
-      .json({ ok: false, error: "PESEL must be 11 characters" });
+    return res.status(400).json({ error: "PESEL must be 11 characters" });
   }
 
   try {
@@ -83,16 +80,12 @@ router.post("/", async (req, res) => {
       [result.insertId]
     );
 
-    return res
-      .status(201)
-      .json({ ok: true, user: rows.length ? rows[0] : null });
+    return res.status(201).json(rows.length ? rows[0] : null);
   } catch (err) {
     if (isMysqlDuplicateError(err)) {
-      return res
-        .status(409)
-        .json({ ok: false, error: "Email or PESEL already exists" });
+      return res.status(409).json({ error: "Email or PESEL already exists" });
     }
-    return res.status(500).json({ ok: false, error: "Failed to create user" });
+    return res.status(500).json({ error: "Failed to create user" });
   }
 });
 
@@ -102,7 +95,7 @@ router.put("/:id", async (req, res) => {
 
   const userId = Number(req.params.id);
   if (!Number.isInteger(userId) || userId <= 0) {
-    return res.status(400).json({ ok: false, error: "Invalid user id" });
+    return res.status(400).json({ error: "Invalid user id" });
   }
 
   const patch: Record<string, unknown> = isRecord(req.body) ? req.body : {};
@@ -120,9 +113,7 @@ router.put("/:id", async (req, res) => {
   };
 
   if (allowed.pesel && allowed.pesel.length !== 11) {
-    return res
-      .status(400)
-      .json({ ok: false, error: "PESEL must be 11 characters" });
+    return res.status(400).json({ error: "PESEL must be 11 characters" });
   }
 
   const sets: string[] = [];
@@ -154,9 +145,7 @@ router.put("/:id", async (req, res) => {
   }
 
   if (sets.length === 0) {
-    return res
-      .status(400)
-      .json({ ok: false, error: "No valid fields to update" });
+    return res.status(400).json({ error: "No valid fields to update" });
   }
 
   try {
@@ -166,7 +155,7 @@ router.put("/:id", async (req, res) => {
     );
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ ok: false, error: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     }
 
     const [rows] = await pool.execute<UserRow[]>(
@@ -174,17 +163,12 @@ router.put("/:id", async (req, res) => {
       [userId]
     );
 
-    return res.json({
-      ok: true,
-      user: rows.length ? rows[0] : null,
-    });
+    return res.json(rows.length ? rows[0] : null);
   } catch (err) {
     if (isMysqlDuplicateError(err)) {
-      return res
-        .status(409)
-        .json({ ok: false, error: "Email or PESEL already exists" });
+      return res.status(409).json({ error: "Email or PESEL already exists" });
     }
-    return res.status(500).json({ ok: false, error: "Failed to update user" });
+    return res.status(500).json({ error: "Failed to update user" });
   }
 });
 
@@ -194,7 +178,7 @@ router.delete("/:id", async (req, res) => {
 
   const userId = Number(req.params.id);
   if (!Number.isInteger(userId) || userId <= 0) {
-    return res.status(400).json({ ok: false, error: "Invalid user id" });
+    return res.status(400).json({ error: "Invalid user id" });
   }
 
   const [result] = await pool.execute<ResultSetHeader>(
@@ -203,10 +187,10 @@ router.delete("/:id", async (req, res) => {
   );
 
   if (result.affectedRows === 0) {
-    return res.status(404).json({ ok: false, error: "User not found" });
+    return res.status(404).json({ error: "User not found" });
   }
 
-  return res.json({ ok: true });
+  return res.status(204).send();
 });
 
 export default router;
