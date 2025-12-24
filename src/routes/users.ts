@@ -19,7 +19,7 @@ const router = Router();
 router.get(
   "/",
   authenticateToken,
-  authorizeRoles("school_staff", "teacher"),
+  authorizeRoles("staff", "teacher"),
   async (req, res) => {
     const pool = getPoolOr503(res);
     if (!pool) return;
@@ -35,7 +35,7 @@ router.get(
 router.get(
   "/:id",
   authenticateToken,
-  authorizeRoles("school_staff", "teacher"),
+  authorizeRoles("staff", "teacher"),
   async (req, res) => {
     const pool = getPoolOr503(res);
     if (!pool) return;
@@ -61,7 +61,7 @@ router.get(
 router.post(
   "/",
   authenticateToken,
-  authorizeRoles("school_staff"),
+  authorizeRoles("staff"),
   async (req, res) => {
     const pool = getPoolOr503(res);
     if (!pool) return;
@@ -114,7 +114,7 @@ router.post(
 router.put(
   "/:id",
   authenticateToken,
-  authorizeRoles("school_staff"),
+  authorizeRoles("staff"),
   async (req, res) => {
     const pool = getPoolOr503(res);
     if (!pool) return;
@@ -202,7 +202,7 @@ router.put(
 router.delete(
   "/:id",
   authenticateToken,
-  authorizeRoles("school_staff"),
+  authorizeRoles("staff"),
   async (req, res) => {
     const pool = getPoolOr503(res);
     if (!pool) return;

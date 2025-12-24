@@ -1,7 +1,7 @@
-export type Role = "student" | "parent" | "teacher" | "school_staff" | "admin";
+export type Role = "student" | "parent" | "teacher" | "staff" | "admin";
 
 export interface UserPayload {
-  user_id: number;
+  userId: number;
   email: string;
   role: Role;
 }

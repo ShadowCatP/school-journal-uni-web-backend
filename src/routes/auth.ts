@@ -131,11 +131,7 @@ router.post("/login", async (req, res) => {
 
     const user = users[0];
 
-    let passwordMatch = await bcrypt.compare(password, user.password_hash);
-
-    if (!passwordMatch && user.password_hash === password) {
-      passwordMatch = true;
-    }
+    const passwordMatch = await bcrypt.compare(password, user.passwordHash);
 
     if (!passwordMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
@@ -148,7 +144,7 @@ router.post("/login", async (req, res) => {
             FROM Staff S 
             JOIN Occupations O ON S.occupation_id = O.occupation_id 
             WHERE S.user_id = ?`,
-      [user.user_id]
+      [user.userId]
     );
 
     if (staff.length > 0) {
@@ -156,19 +152,19 @@ router.post("/login", async (req, res) => {
       if (occupation === "Nauczyciel") {
         role = "teacher";
       } else {
-        role = "school_staff";
+        role = "staff";
       }
     } else {
       const [students] = await pool.execute<RowDataPacket[]>(
         "SELECT 1 FROM Student WHERE user_id = ?",
-        [user.user_id]
+        [user.userId]
       );
       if (students.length > 0) {
         role = "student";
       } else {
         const [parents] = await pool.execute<RowDataPacket[]>(
           "SELECT 1 FROM Parent WHERE user_id = ?",
-          [user.user_id]
+          [user.userId]
         );
         if (parents.length > 0) {
           role = "parent";
@@ -181,14 +177,14 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { user_id: user.user_id, email: user.email, role },
+      { user_id: user.userId, email: user.email, role },
       config.jwtSecret,
       { expiresIn: "1h" }
     );
 
     // Don't send password_hash back
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password_hash, ...userWithoutPassword } = user;
+    const { passwordHash: password_hash, ...userWithoutPassword } = user;
 
     return res.json({ token, user: { ...userWithoutPassword, role } });
   } catch (err) {

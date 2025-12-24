@@ -1,16 +1,16 @@
 import type { RowDataPacket } from "mysql2/promise";
 
 export type User = {
-  user_id: number;
-  first_name: string;
-  middle_name: string | null;
-  last_name: string;
+  userId: number;
+  firstName: string;
+  middleName: string | null;
+  lastName: string;
   email: string;
   pesel: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
-export type UserWithPassword = User & { password_hash: string };
+export type UserWithPassword = User & { passwordHash: string };
 
 export type UserRow = RowDataPacket & User;
