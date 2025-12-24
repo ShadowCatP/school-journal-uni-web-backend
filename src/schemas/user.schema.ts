@@ -11,4 +11,6 @@ export type User = {
   updated_at: Date;
 };
 
+export type UserWithPassword = User & { password_hash: string };
+
 export type UserRow = RowDataPacket & User;

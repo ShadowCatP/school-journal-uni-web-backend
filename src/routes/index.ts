@@ -2,9 +2,11 @@ import { Router } from "express";
 
 import { getDbPool } from "../db/pool";
 import usersRoutes from "./users";
+import authRoutes from "./auth";
 
 const router = Router();
 
+router.use("/auth", authRoutes);
 router.use("/users", usersRoutes);
 
 router.get("/", async (req, res) => {
