@@ -1,0 +1,39 @@
+{
+  "name": "school-journal-backed",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
+    "build": "tsc",
+    "build:check": "tsc --noEmit",
+    "start": "node dist/index.js",
+    "lint": "eslint ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.15.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.10.4",
+    "eslint": "^9.39.2",
+    "globals": "^16.5.0",
+    "jiti": "^2.6.1",
+    "nodemon": "^3.1.11",
+    "prettier": "^3.7.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.50.0"
+  }
+}
